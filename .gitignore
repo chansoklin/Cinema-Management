@@ -1,0 +1,16 @@
+# Build outputs
+/target/
+/out/
+/bin/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# System files
+.DS_Store
+git add -f src/
+git rm -r --cached .
+git add .
+git commit -m "Update .gitignore and track src directory"
