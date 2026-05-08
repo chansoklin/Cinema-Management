@@ -1,266 +1,274 @@
 package panels;
 
-import main.CinemaManagementSystem;
-import model.User;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.List;
+import model.User;
+import service.UserService;
+import exception.DatabaseException;
+import util.Constants;
 
 public class LoginPanel extends JPanel {
-    private final CinemaManagementSystem system;
-    private final List<User> users;
-    private final List<String> logs;
-    private JLabel statusLabel;
-    private User currentUser;
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JComboBox<String> roleComboBox;
+    private UserService userService;
+    private LoginListener loginListener;
 
-    public LoginPanel(CinemaManagementSystem system, List<User> users, List<String> logs) {
-        this.system = system;
-        this.users = users;
-        this.logs = logs;
-        this.currentUser = currentUser;
-        initUI();
+    // Modern color scheme
+    private final Color PRIMARY_COLOR = new Color(41, 128, 185);
+    private final Color SECONDARY_COLOR = new Color(52, 73, 94);
+    private final Color SUCCESS_COLOR = new Color(46, 204, 113);
+    private final Color BG_COLOR = new Color(248, 249, 250);
+    private final Color CARD_COLOR = Color.WHITE;
+    private final Color BORDER_COLOR = new Color(220, 220, 220);
+    private final Color TEXT_DARK = new Color(44, 62, 80);
+    private final Color TEXT_LIGHT = Color.WHITE;
+    private final Color TEXT_GRAY = new Color(127, 140, 141);
+
+    public interface LoginListener {
+        void onLoginSuccess(User user);
     }
 
-    private void initUI() {
+    public LoginPanel(LoginListener listener) {
+        this.loginListener = listener;
+        this.userService = new UserService();
+        initComponents();
+    }
+
+    private void initComponents() {
         setLayout(new GridBagLayout());
-        setBackground(new Color(240, 248, 255)); // 浅蓝色背景
+        setBackground(BG_COLOR);
+
+        // Create main card panel
+        JPanel cardPanel = new JPanel(new GridBagLayout());
+        cardPanel.setBackground(CARD_COLOR);
+        cardPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER_COLOR, 1),
+                BorderFactory.createEmptyBorder(30, 40, 30, 40)
+        ));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(8, 10, 8, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // 标题
-        JLabel titleLabel = new JLabel("万东电影院管理系统");
-        titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 28));
-        titleLabel.setForeground(new Color(25, 25, 112)); // 深蓝色
+        // Logo / Icon
+        JLabel logoLabel = new JLabel("🎬", SwingConstants.CENTER);
+        logoLabel.setFont(new Font("Segoe UI", Font.PLAIN, 48));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        add(titleLabel, gbc);
+        cardPanel.add(logoLabel, gbc);
 
-        // 创建登录面板
-        JPanel loginPanel = new JPanel(new GridBagLayout());
-        loginPanel.setBorder(BorderFactory.createTitledBorder("系统登录"));
-        loginPanel.setBackground(Color.WHITE);
-        loginPanel.setPreferredSize(new Dimension(400, 300));
-
+        // Title
+        JLabel titleLabel = new JLabel("Cinema Management System");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        titleLabel.setForeground(PRIMARY_COLOR);
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 1;
-        gbc.gridx = 0;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(20, 0, 20, 0);
-        add(loginPanel, gbc);
+        cardPanel.add(titleLabel, gbc);
 
-        // 重置约束
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.gridwidth = 1;
-        gbc.gridy = 0;
-        gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.LINE_END;
-
-        // 用户名标签
-        JLabel userLabel = new JLabel("用户名:");
-        userLabel.setFont(new Font("宋体", Font.PLAIN, 16));
-        loginPanel.add(userLabel, gbc);
-
-        // 用户名输入框
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.LINE_START;
-        JTextField userField = new JTextField(15);
-        userField.setFont(new Font("宋体", Font.PLAIN, 16));
-        loginPanel.add(userField, gbc);
-
-        // 密码标签
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.LINE_END;
-        JLabel passLabel = new JLabel("密码:");
-        passLabel.setFont(new Font("宋体", Font.PLAIN, 16));
-        loginPanel.add(passLabel, gbc);
-
-        // 密码输入框
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.LINE_START;
-        JPasswordField passField = new JPasswordField(15);
-        passField.setFont(new Font("宋体", Font.PLAIN, 16));
-        loginPanel.add(passField, gbc);
-
-        // 角色标签
-        gbc.gridx = 0;
+        // Subtitle
+        JLabel subtitleLabel = new JLabel("Sign in to your account");
+        subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        subtitleLabel.setForeground(TEXT_GRAY);
+        subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.LINE_END;
-        JLabel roleLabel = new JLabel("角色:");
-        roleLabel.setFont(new Font("宋体", Font.PLAIN, 16));
-        loginPanel.add(roleLabel, gbc);
+        cardPanel.add(subtitleLabel, gbc);
 
-        // 角色选择
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.LINE_START;
-        String[] roles = {"管理员", "经理", "前台"};
-        JComboBox<String> roleCombo = new JComboBox<>(roles);
-        roleCombo.setFont(new Font("宋体", Font.PLAIN, 16));
-        loginPanel.add(roleCombo, gbc);
-
-        // 登录按钮
-        JButton loginButton = new JButton("登录");
-        loginButton.setFont(new Font("宋体", Font.BOLD, 16));
-        loginButton.setBackground(new Color(70, 130, 180)); // 钢蓝色
-        loginButton.setForeground(Color.black);
-        gbc.gridx = 0;
+        // Separator
+        JSeparator separator = new JSeparator();
+        gbc.insets = new Insets(15, 10, 15, 10);
         gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(20, 10, 10, 10);
-        loginPanel.add(loginButton, gbc);
+        cardPanel.add(separator, gbc);
 
-        // 状态标签（用于显示错误信息）
-        statusLabel = new JLabel();
-        statusLabel.setForeground(Color.RED);
-        statusLabel.setFont(new Font("宋体", Font.PLAIN, 14));
+        // Username field
+        gbc.insets = new Insets(8, 10, 8, 10);
+        gbc.gridwidth = 1;
         gbc.gridy = 4;
-        gbc.insets = new Insets(5, 10, 5, 10);
-        loginPanel.add(statusLabel, gbc);
+        gbc.gridx = 0;
+        JLabel usernameLabel = new JLabel("Username");
+        usernameLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        usernameLabel.setForeground(TEXT_DARK);
+        cardPanel.add(usernameLabel, gbc);
 
-        // 登录按钮事件处理
-        loginButton.addActionListener((ActionEvent e) -> {
-            String username = userField.getText().trim();
-            String password = new String(passField.getPassword());
-            String role = (String) roleCombo.getSelectedItem();
+        gbc.gridx = 1;
+        usernameField = new JTextField(18);
+        usernameField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        usernameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER_COLOR),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+        cardPanel.add(usernameField, gbc);
 
-            if (username.isEmpty() || password.isEmpty()) {
-                statusLabel.setText("用户名和密码不能为空!");
-                return;
-            }
-
-            // 查找匹配的用户
-            User authenticatedUser = null;
-            for (User user : users) {
-                if (user.getUsername().equals(username) &&
-                        user.getPassword().equals(password) &&
-                        user.getRole().equals(role)) {
-                    authenticatedUser = user;
-                    break;
-                }
-            }
-
-            if (authenticatedUser == null) {
-                statusLabel.setText("用户名、密码或角色不正确！");
-                return;
-            }
-
-            // 检查是否需要重置密码
-            if (authenticatedUser.isPasswordResetRequired()) {
-                int option = JOptionPane.showConfirmDialog(
-                        this,
-                        "您的密码已被重置，需要修改密码才能继续操作。\n是否现在修改密码？",
-                        "密码重置要求",
-                        JOptionPane.YES_NO_OPTION
-                );
-
-                if (option == JOptionPane.YES_OPTION) {
-                    showPasswordChangeDialog(authenticatedUser);
-                    return;
-                }
-            }
-
-            // 根据角色跳转到相应面板
-            switch (role) {
-                case "管理员":
-                    system.showAdminPanel(authenticatedUser);
-                    break;
-                case "经理":
-                    system.showManagerPanel(authenticatedUser);
-                    break;
-                case "前台":
-                    system.showFrontDeskPanel(authenticatedUser);
-                    break;
-            }
-        });
-
-        // 添加取消按钮
-        JButton cancelButton = new JButton("取消");
-        cancelButton.setFont(new Font("宋体", Font.BOLD, 14));
-        cancelButton.addActionListener(e -> {
-            userField.setText("");
-            passField.setText("");
-            statusLabel.setText("");
-        });
+        // Password field
         gbc.gridy = 5;
-        loginPanel.add(cancelButton, gbc);
+        gbc.gridx = 0;
+        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        passwordLabel.setForeground(TEXT_DARK);
+        cardPanel.add(passwordLabel, gbc);
+
+        gbc.gridx = 1;
+        passwordField = new JPasswordField(18);
+        passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER_COLOR),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+        cardPanel.add(passwordField, gbc);
+
+        // Role selection
+        gbc.gridy = 6;
+        gbc.gridx = 0;
+        JLabel roleLabel = new JLabel("Login as");
+        roleLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        roleLabel.setForeground(TEXT_DARK);
+        cardPanel.add(roleLabel, gbc);
+
+        gbc.gridx = 1;
+        String[] roles = {"👑 Administrator", "📊 Manager", "🎫 Front Desk", "🎬 Customer"};
+        roleComboBox = new JComboBox<>(roles);
+        roleComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        roleComboBox.setBackground(CARD_COLOR);
+        roleComboBox.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER_COLOR),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+        cardPanel.add(roleComboBox, gbc);
+
+        // Login button
+        gbc.gridy = 7;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        JButton loginButton = createStyledButton("Sign In", PRIMARY_COLOR, TEXT_LIGHT);
+        loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        loginButton.addActionListener(e -> login());
+        cardPanel.add(loginButton, gbc);
+
+        // Demo info collapsible panel
+        JPanel demoPanel = createDemoPanel();
+        gbc.gridy = 8;
+        gbc.insets = new Insets(15, 10, 5, 10);
+        cardPanel.add(demoPanel, gbc);
+
+        // Clear button
+        gbc.gridy = 9;
+        JButton clearButton = createStyledButton("Clear Fields", SECONDARY_COLOR, TEXT_LIGHT);
+        clearButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        clearButton.addActionListener(e -> clearFields());
+        cardPanel.add(clearButton, gbc);
+
+        // Add card panel to center of screen
+        GridBagConstraints mainGbc = new GridBagConstraints();
+        mainGbc.gridx = 0;
+        mainGbc.gridy = 0;
+        add(cardPanel, mainGbc);
     }
 
-    private void showPasswordChangeDialog(User user) {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "修改密码", true);
-        dialog.setSize(400, 250);
-        dialog.setLayout(new GridBagLayout());
-        dialog.setLocationRelativeTo(this);
+    private JButton createStyledButton(String text, Color bgColor, Color fgColor) {
+        JButton button = new JButton(text);
+        button.setBackground(bgColor);
+        button.setForeground(fgColor);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        button.setFocusPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        dialog.add(new JLabel("新密码:"), gbc);
-
-        gbc.gridx = 1;
-        JPasswordField newPasswordField = new JPasswordField(20);
-        newPasswordField.setFont(new Font("宋体", Font.PLAIN, 14));
-        dialog.add(newPasswordField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        dialog.add(new JLabel("确认新密码:"), gbc);
-
-        gbc.gridx = 1;
-        JPasswordField confirmPasswordField = new JPasswordField(20);
-        confirmPasswordField.setFont(new Font("宋体", Font.PLAIN, 14));
-        dialog.add(confirmPasswordField, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        JButton changeButton = new JButton("修改密码");
-        changeButton.setFont(new Font("宋体", Font.BOLD, 14));
-        changeButton.addActionListener(e -> {
-            String newPass = new String(newPasswordField.getPassword());
-            String confirmPass = new String(confirmPasswordField.getPassword());
-
-            if (!newPass.equals(confirmPass)) {
-                JOptionPane.showMessageDialog(dialog, "两次输入的新密码不一致！", "错误", JOptionPane.ERROR_MESSAGE);
-                return;
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(bgColor.brighter());
             }
-
-            if (newPass.length() < 6) {
-                JOptionPane.showMessageDialog(dialog, "密码长度不能少于6位！", "错误", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            user.setPassword(newPass);
-            user.setPasswordResetRequired(false);
-
-            String log = "用户 " + user.getUsername() + " 在登录时修改了密码";
-            logs.add(log);
-
-            JOptionPane.showMessageDialog(dialog, "密码修改成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
-            dialog.dispose();
-
-            // 根据角色跳转到相应面板
-            switch (user.getRole()) {
-                case "管理员":
-                    system.showAdminPanel(user);
-                    break;
-                case "经理":
-                    system.showManagerPanel(user);
-                    break;
-                case "前台":
-                    system.showFrontDeskPanel(user);
-                    break;
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(bgColor);
             }
         });
-        dialog.add(changeButton, gbc);
 
-        dialog.setVisible(true);
+        return button;
+    }
+
+    private JPanel createDemoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(new Color(245, 245, 245));
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER_COLOR),
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
+
+        JLabel demoTitle = new JLabel("📋 Demo Accounts");
+        demoTitle.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        demoTitle.setForeground(SECONDARY_COLOR);
+        panel.add(demoTitle, BorderLayout.NORTH);
+
+        JPanel accountsPanel = new JPanel(new GridLayout(4, 2, 10, 5));
+        accountsPanel.setBackground(new Color(245, 245, 245));
+
+        accountsPanel.add(createAccountLabel("👑 Admin"));
+        accountsPanel.add(createAccountLabel("admin / admin123"));
+        accountsPanel.add(createAccountLabel("📊 Manager"));
+        accountsPanel.add(createAccountLabel("manager1 / manager123"));
+        accountsPanel.add(createAccountLabel("🎫 Front Desk"));
+        accountsPanel.add(createAccountLabel("staff1 / staff123"));
+        accountsPanel.add(createAccountLabel("🎬 Customer"));
+        accountsPanel.add(createAccountLabel("customer1 / customer123"));
+
+        panel.add(accountsPanel, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    private JLabel createAccountLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        label.setForeground(TEXT_GRAY);
+        return label;
+    }
+
+    private void login() {
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword());
+
+        if (username.isEmpty() || password.isEmpty()) {
+            showError("Please enter username and password");
+            return;
+        }
+
+        String selectedRole = (String) roleComboBox.getSelectedItem();
+        String expectedRole = "";
+
+        if (selectedRole.contains("Administrator")) expectedRole = "ADMIN";
+        else if (selectedRole.contains("Manager")) expectedRole = "MANAGER";
+        else if (selectedRole.contains("Front Desk")) expectedRole = "FRONT_DESK";
+        else if (selectedRole.contains("Customer")) expectedRole = "CUSTOMER";
+
+        // DEMO MODE - Allow login without database for testing
+        User demoUser = new User();
+        demoUser.setUsername(username);
+        demoUser.setName(username.equals("admin") ? "Admin User" : username);
+        demoUser.setRole(expectedRole);
+        demoUser.setId(1);
+
+        showSuccess("Demo Login: Welcome " + demoUser.getName() + "!\nRole: " + demoUser.getRole());
+
+        if (loginListener != null) {
+            loginListener.onLoginSuccess(demoUser);
+        }
+    }
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showSuccess(String message) {
+        JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showWarning(String message) {
+        JOptionPane.showMessageDialog(this, message, "Demo Mode", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void clearFields() {
+        usernameField.setText("");
+        passwordField.setText("");
+        roleComboBox.setSelectedIndex(0);
+        usernameField.requestFocus();
     }
 }

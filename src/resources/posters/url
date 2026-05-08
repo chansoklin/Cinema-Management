@@ -1,0 +1,30 @@
+# save as download_posters.py
+import urllib.request
+import os
+import time
+
+# Create posters directory
+os.makedirs("src/resources/posters", exist_ok=True)
+
+# Working poster URLs (verified)
+posters = {
+    "inception.jpg": "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg",
+    "the_dark_knight.jpg": "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg",
+    "interstellar.jpg": "https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktNjIwZC00MzcyLWE5MTAtODFhYmQ0YzYzYzA3XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg",
+    "john_wick.jpg": "https://m.media-amazon.com/images/M/MV5BMTU2NjA1ODgzMF5BMl5BanBnXkFtZTgwMTU2NDA4MjE@._V1_.jpg",
+    "the_matrix.jpg": "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtMjQ2ZC00NjVjLWE2YTktYzYzZWM4YzA4ZjFkXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
+    "joker.jpg": "https://m.media-amazon.com/images/M/MV5BNGVjNWI4ZGUtNzE0MS00YTJmLWEyZDctN2ZiZWQ2Y2QxZjI2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
+    "oppenheimer.jpg": "https://m.media-amazon.com/images/M/MV5BMDBmYTZjNjUtN2M1MS00MTQ2LTk2ODgtNzc2M2QyZGE5NTVjXkEyXkFqcGdeQXVyNzAwMjU2MTY@._V1_.jpg",
+    "barbie.jpg": "https://m.media-amazon.com/images/M/MV5BOWIwZWI0YTAtZGUzZi00YjA4LWJhYzQtODA4YzY5ODQzYzRlXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg"
+}
+
+print("Downloading posters...")
+for filename, url in posters.items():
+    try:
+        urllib.request.urlretrieve(url, f"src/resources/posters/{filename}")
+        print(f"✓ Downloaded: {filename}")
+        time.sleep(0.5)
+    except Exception as e:
+        print(f"✗ Failed: {filename} - {e}")
+
+print("\nDone! Posters saved to src/resources/posters/")

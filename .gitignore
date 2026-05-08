@@ -1,16 +1,46 @@
-# Build outputs
-/target/
-/out/
-/bin/
+# Compiled files
+*.class
+*.jar
+*.war
+*.ear
 
 # IDE files
 .idea/
-.vscode/
 *.iml
+.classpath
+.project
+.settings/
+.vscode/
 
-# System files
+# OS files
 .DS_Store
-git add -f src/
-git rm -r --cached .
-git add .
-git commit -m "Update .gitignore and track src directory"
+Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+
+# Logs
+*.log
+logs/
+
+# Output directory
+out/
+target/
+build/
+
+# Config with passwords
+config.properties
+src/main/resources/config.properties
+
+# Environment files
+.env
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Package files
+*.zip
+*.tar.gz

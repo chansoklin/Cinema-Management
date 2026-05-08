@@ -1,0 +1,11 @@
+// Alternative method to load local posters
+private static ImageIcon loadLocalPoster(String movieTitle, int width, int height) {
+    String filename = "resources/posters/" + movieTitle.toLowerCase().replace(" ", "_") + ".jpg";
+    try {
+        ImageIcon original = new ImageIcon(filename);
+        Image scaledImage = original.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
+    } catch (Exception e) {
+        return createDefaultPoster(movieTitle, width, height);
+    }
+}

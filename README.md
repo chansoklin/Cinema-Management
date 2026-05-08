@@ -1,40 +1,34 @@
-# Management Cinema
+# Cinema Management System
 
-#### 介绍
-万东影院管理系统是为现代化影院量身打造的全方位数字化解决方案，专为东平县万东电影院从传统手工管理模式向智能化管理转型而设计。系统采用模块化架构，整合票务管理、智能排片、多角色权限控制和实时数据分析等核心功能，助力影院运营效率提升300%。
+A comprehensive Cinema Management System built with Java Swing and MySQL.
 
+## Features
 
-#### 软件架构
-软件架构说明
+- **User Authentication** with role-based access (Admin, Manager, Front Desk)
+- **Movie Management** - Add, edit, delete movies
+- **Schedule Management** - Manage showtimes and screen allocations
+- **Ticket Booking** - Book tickets with seat selection
+- **Pricing System** - Dynamic pricing based on seat type, showtime, and customer type
+- **Booking Management** - View, cancel, and refund bookings
+- **User Management** - Admin can manage system users
 
-分层架构设计：
+## Technologies Used
 
-表现层：基于Swing的GUI界面（含管理员、经理、前台三种专属界面）
-业务逻辑层：采用工厂模式处理不同用户角色操作
-数据访问层：JSON文件持久化存储（用户数据、影片数据、场次数据）
-核心模块：
-权限管理模块（RBAC模型）
-智能排片引擎（基于电影热度自动优化场次）
-实时票房统计看板
-电子票务生成系统
+- Java 8+
+- Swing for GUI
+- MySQL for database
+- JDBC for database connectivity
 
-#### 安装教程
+## Setup Instructions
 
-环境要求：
+### Prerequisites
 
-JDK 1.8+
-Windows 10/11
-最小4GB内存
+- Java JDK 8 or higher
+- MySQL Server 5.7+
+- MySQL Connector/J (included in lib folder)
 
-#### 使用说明
-快速入门：
+### Database Setup
 
-管理员操作：
-使用默认账号 admin/ynuinfo#777 登录
-
-经理操作：
-使用默认账号 manager/123456 登录
-
-前台操作：
-使用默认账号 frontdesk/123456 登录
-
+1. Create MySQL database:
+```bash
+mysql -u root -p
