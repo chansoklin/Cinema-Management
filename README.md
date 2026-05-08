@@ -1,34 +1,122 @@
-# Cinema Management System
+# 🎬 Cinema Management System
 
-A comprehensive Cinema Management System built with Java Swing and MySQL.
+A desktop-based Cinema Management System built using Java Swing and MySQL.
 
-## Features
+This project was developed for our Object-Oriented Programming final project. The system simulates real cinema operations including movie scheduling, seat booking, food ordering, ticket management, and sales tracking.
 
-- **User Authentication** with role-based access (Admin, Manager, Front Desk)
-- **Movie Management** - Add, edit, delete movies
-- **Schedule Management** - Manage showtimes and screen allocations
-- **Ticket Booking** - Book tickets with seat selection
-- **Pricing System** - Dynamic pricing based on seat type, showtime, and customer type
-- **Booking Management** - View, cancel, and refund bookings
-- **User Management** - Admin can manage system users
+The application contains both a staff management system and a customer booking portal.
 
-## Technologies Used
+---
 
-- Java 8+
-- Swing for GUI
-- MySQL for database
-- JDBC for database connectivity
+# 📌 Project Overview
 
-## Setup Instructions
+The system has two main parts:
 
-### Prerequisites
+## 👨‍💼 Staff Management System
+Used by cinema employees and administrators.
 
-- Java JDK 8 or higher
-- MySQL Server 5.7+
-- MySQL Connector/J (included in lib folder)
+Different roles have different permissions:
+- Admin
+- Manager
+- Front Desk Staff
 
-### Database Setup
+Staff members can:
+- Manage movies
+- Create schedules
+- Sell tickets
+- Process refunds
+- Manage users
+- Track sales data
 
-1. Create MySQL database:
+---
+
+## 🎫 Customer Booking Portal
+
+Customers can:
+- Browse currently available movies
+- View movie posters and showtimes
+- Select seats visually
+- Order snacks and drinks
+- Generate electronic tickets
+- View booking history
+
+---
+
+# ✨ Main Features
+
+## 🎥 Movie Management
+- Add, update, and delete movies
+- Store movie details in MySQL
+- Display movie posters from `resources/icons/`
+
+## 🕒 Showtime & Schedule Management
+- Create movie schedules
+- Assign movies to cinema screens
+- Manage daily showtimes
+
+## 💺 Seat Booking System
+- Visual seat selection interface
+- Different seat states:
+  - Green = Available
+  - Red = Booked
+  - Yellow = Selected
+- Database seat validation
+
+## 🍿 Food Ordering
+Customers can add:
+- Popcorn
+- Drinks
+- Combo meals
+
+Food orders are attached to bookings.
+
+## 🎟 Ticket System
+- Ticket generation after payment
+- Ticket history tracking
+- PDF ticket export
+- QR code generation
+
+## 📊 Sales Dashboard
+Managers can:
+- View sales statistics
+- Check top-selling movies
+- Monitor daily schedules
+- Track recent ticket sales
+
+---
+
+# 🏗 System Architecture
+
+The project follows a layered architecture to separate responsibilities.
+
+## Structure Overview
+
+- **Model Layer** → Entity and data classes
+- **DAO Layer** → Database operations
+- **Service Layer** → Business logic
+- **Controller Layer** → Handles interactions between UI and services
+- **Panel/UI Layer** → Java Swing user interface
+
+This structure helped make the project easier to organize and maintain.
+
+---
+
+# 📂 Project Structure
+
 ```bash
-mysql -u root -p
+Cinema-Management-System/
+│
+├── src/
+│   ├── model/
+│   ├── dao/
+│   ├── service/
+│   ├── controller/
+│   ├── panels/
+│   ├── ui/
+│   ├── util/
+│   ├── enums/
+│   ├── exception/
+│   └── resources/
+│
+├── README.md
+└── .gitignore
