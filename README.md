@@ -146,3 +146,20 @@ This command:
 - Runs the main application
 
 ---
+## 🔑 Test Accounts
+
+Admin:
+username: admin
+password: admin123
+
+Manager:
+username: manager1
+password: manager123
+
+Frontdesk:
+username: staff1
+password: staff123
+
+Customer:
+username: customer1
+password: customer123
