@@ -1,46 +1,7 @@
-# Compiled files
 *.class
-*.jar
-*.war
-*.ear
-
-# IDE files
+out/
 .idea/
 *.iml
-.classpath
-.project
-.settings/
-.vscode/
-
-# OS files
 .DS_Store
-Thumbs.db
-
-# Database files
-*.db
-*.sqlite
-
-# Logs
-*.log
-logs/
-
-# Output directory
-out/
-target/
-build/
-
-# Config with passwords
 config.properties
-src/main/resources/config.properties
-
-# Environment files
-.env
-
-# Temporary files
-*.tmp
-*.swp
-*.swo
-
-# Package files
-*.zip
-*.tar.gz
+*.log
