@@ -120,6 +120,7 @@ Cinema-Management-System/
 │
 ├── README.md
 └── .gitignore
+
 # 🖥️ Useful Commands
 
 ## Connect to MySQL
@@ -131,7 +132,6 @@ mysql -u root -p
 ```
 
 ---
-
 ## Compile and Run the Project
 
 Compile all Java files and run the application in one command:
