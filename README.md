@@ -99,53 +99,6 @@ The project follows a layered architecture to separate responsibilities.
 
 This structure helped make the project easier to organize and maintain.
 
----
-
-# 📂 Project Structure
-
-```bash
-Cinema-Management-System/
-│
-├── src/
-│   ├── model/
-│   ├── dao/
-│   ├── service/
-│   ├── controller/
-│   ├── panels/
-│   ├── ui/
-│   ├── util/
-│   ├── enums/
-│   ├── exception/
-│   └── resources/
-│
-├── README.md
-└── .gitignore
-
-# 🖥️ Useful Commands
-
-## Connect to MySQL
-
-Start and connect to MySQL:
-
-```bash
-mysql -u root -p
-```
-
----
-## Compile and Run the Project
-
-Compile all Java files and run the application in one command:
-
-```bash
-javac -cp "lib/mysql-connector-java-8.0.33.jar" -d out $(find src -name "*.java") && java -cp "lib/mysql-connector-java-8.0.33.jar:out" main.Main
-```
-
-This command:
-- Compiles all Java source files
-- Stores compiled `.class` files inside the `out/` folder
-- Runs the main application
-
----
 ## 🔑 Test Accounts
 
 Admin:
